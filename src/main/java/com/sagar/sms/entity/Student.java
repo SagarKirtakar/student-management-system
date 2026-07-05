@@ -1,23 +1,25 @@
 package com.sagar.sms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table
+@Getter
+@Setter
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private long id;
+    private Long id;
 
     @Column
     private String firstName;
@@ -25,14 +27,14 @@ public class Student {
     @Column
     private String lastName;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Column
     private String phone;
 
     @Column
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column
     private LocalDateTime createdAt;

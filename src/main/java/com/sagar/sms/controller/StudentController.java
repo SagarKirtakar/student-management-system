@@ -16,44 +16,29 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping
-    public Student add(@RequestBody Student std) {
+    public Student createStudent(@RequestBody Student std) {
         return studentService.createStd(std);
     }
 
     @GetMapping
-    public List<Student> getALl() {
+    public List<Student> getAllStudents() {
         return studentService.getAllStd();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStdDetails(@PathVariable long id) {
-        Student validStd = studentService.getStdById(id).orElse(null);
-        if(validStd != null) {
-            return ResponseEntity.ok().body(validStd);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStdById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStd(@PathVariable long id, @RequestBody Student newStd ) {
-        Student validStd = studentService.updateStdById(id, newStd);
-        if(validStd != null) {
-            return ResponseEntity.ok().body(newStd);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student newStd ) {
+        return ResponseEntity.ok(studentService.updateStdById(id, newStd));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStd(@PathVariable long id) {
-        Student validStd = studentService.getStdById(id).orElse(null);
-        if(validStd != null) {
+    public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
             studentService.deleteStdById(id);
-            return ResponseEntity.ok().body("User deleted successfully");
-        }else {
-            return ResponseEntity.ok().body("User not delete due to some error");
-        }
+            return ResponseEntity.ok("Student deleted successfully");
     }
 
 }
