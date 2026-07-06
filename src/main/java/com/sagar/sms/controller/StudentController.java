@@ -1,8 +1,11 @@
 package com.sagar.sms.controller;
 
+import com.sagar.sms.dto.StudentRequestDTO;
+import com.sagar.sms.dto.StudentResponseDTO;
 import com.sagar.sms.entity.Student;
 import com.sagar.sms.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,23 +19,25 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping
-    public Student createStudent(@RequestBody Student std) {
-        return studentService.createStd(std);
+    public ResponseEntity<Void> createStudent(@RequestBody StudentRequestDTO studentRequestDTO) {
+         studentService.createStd(studentRequestDTO);
+         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
+    public List<StudentResponseDTO> getAllStudents() {
         return studentService.getAllStd();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
+    public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStdById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student newStd ) {
-        return ResponseEntity.ok(studentService.updateStdById(id, newStd));
+    public ResponseEntity<Void> updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO studentRequestDTO ) {
+        studentService.updateStdById(id, studentRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
