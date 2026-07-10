@@ -55,8 +55,8 @@ public class StudentController {
     public ResponseEntity<Page<StudentResponseDTO>> getStudents(
             @RequestParam(required = false, defaultValue = "1") int pageNo,
             @RequestParam(required = false, defaultValue = "5") int pageSize,
-            @RequestParam(defaultValue = "firstName") String sortBy,
-            @RequestParam(defaultValue = "ASC") String sortDir
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDir
     ) {
         Sort sort = sortDir.equalsIgnoreCase("ASC")
                 ? Sort.by(sortBy).ascending()
@@ -69,6 +69,27 @@ public class StudentController {
             throw new IllegalArgumentException("Page size must be greater than or equal 1");
         }
         return ResponseEntity.ok(studentService.getStudents(PageRequest.of(pageNo-1, pageSize,sort)));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<StudentResponseDTO>> searchStudents(
+            @RequestParam String firstName,
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDir
+    ) {
+
+        Sort sort = sortDir.equalsIgnoreCase("ASC")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable =
+                PageRequest.of(pageNo - 1, pageSize, sort);
+
+        return ResponseEntity.ok(
+                studentService.searchStudents(firstName, pageable)
+        );
     }
 
 

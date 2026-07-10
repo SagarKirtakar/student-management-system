@@ -92,10 +92,21 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Page<StudentResponseDTO> getStudents(Pageable pageable) {
-        Page<Student> studentPage = studentRepository.findAll(pageable);
+            Page<Student> studentPage =  studentRepository.findAll(pageable);
+            return studentPage.map(student -> modelMapper.map(student, StudentResponseDTO.class));
 
-        return studentPage.map(
-                student -> modelMapper.map(student, StudentResponseDTO.class));
     }
+
+    @Override
+    public Page<StudentResponseDTO> searchStudents(String search, Pageable pageable) {
+        if (search != null) {
+            Page<Student> studentPage =  studentRepository.findByFirstNameContainingIgnoreCase(search, pageable);
+            return studentPage.map(student -> modelMapper.map(student, StudentResponseDTO.class));
+        }else {
+            Page<Student> studentPage =  studentRepository.findAll(pageable);
+            return studentPage.map(student -> modelMapper.map(student, StudentResponseDTO.class));
+        }
+    }
+
 
 }

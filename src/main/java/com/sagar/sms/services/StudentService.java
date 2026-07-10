@@ -25,4 +25,6 @@ public interface StudentService {
 
     public Page<StudentResponseDTO> getStudents(Pageable pageable);
 
+    Page<StudentResponseDTO> searchStudents(String search, Pageable pageable);
+
 }
