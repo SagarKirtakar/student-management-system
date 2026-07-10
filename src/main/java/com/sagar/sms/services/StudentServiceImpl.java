@@ -3,10 +3,13 @@ package com.sagar.sms.services;
 import com.sagar.sms.dto.StudentRequestDTO;
 import com.sagar.sms.dto.StudentResponseDTO;
 import com.sagar.sms.entity.Student;
+import com.sagar.sms.exception.EmailAlreadyExistsException;
 import com.sagar.sms.exception.StudentNotFoundException;
 import com.sagar.sms.repository.StudentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,10 +30,14 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public void createStd(StudentRequestDTO studentRequestDTO) {
-       Student std =  modelMapper.map(studentRequestDTO, Student.class);
-       std.setCreatedAt(LocalDateTime.now());
-       std.setUpdatedAt(LocalDateTime.now());
-       studentRepository.save(std);
+        if(studentRepository.existsByEmail(studentRequestDTO.getEmail())) {
+            throw new EmailAlreadyExistsException("Email is already exists");
+        }
+            Student std =  modelMapper.map(studentRequestDTO, Student.class);
+            std.setCreatedAt(LocalDateTime.now());
+            std.setUpdatedAt(LocalDateTime.now());
+            studentRepository.save(std);
+
     }
 
     @Override
@@ -81,6 +88,14 @@ public class StudentServiceImpl implements StudentService{
         }else {
             throw new StudentNotFoundException("Student not found : "+id);
         }
+    }
+
+    @Override
+    public Page<StudentResponseDTO> getStudents(Pageable pageable) {
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+
+        return studentPage.map(
+                student -> modelMapper.map(student, StudentResponseDTO.class));
     }
 
 }

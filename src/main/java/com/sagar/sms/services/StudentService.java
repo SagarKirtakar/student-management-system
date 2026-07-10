@@ -4,6 +4,8 @@ import com.sagar.sms.dto.StudentRequestDTO;
 import com.sagar.sms.dto.StudentResponseDTO;
 import com.sagar.sms.entity.Student;
 import com.sagar.sms.exception.StudentNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +22,7 @@ public interface StudentService {
     public void updateStdById(long id, StudentRequestDTO std) throws StudentNotFoundException;
 
     public void deleteStdById(long id) throws StudentNotFoundException;
+
+    public Page<StudentResponseDTO> getStudents(Pageable pageable);
+
 }
