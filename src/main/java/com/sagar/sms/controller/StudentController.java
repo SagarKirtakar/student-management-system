@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,13 +53,22 @@ public class StudentController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<StudentResponseDTO>> getStudents(
-            @RequestParam(defaultValue = "1") int pageNo,
-            @RequestParam(defaultValue = "5") int pageSize
+            @RequestParam(required = false, defaultValue = "1") int pageNo,
+            @RequestParam(required = false, defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "firstName") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDir
     ) {
+        Sort sort = sortDir.equalsIgnoreCase("ASC")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         if(pageNo < 1) {
             throw new IllegalArgumentException("Page number must be greater than or equal 1");
         }
-        return ResponseEntity.ok(studentService.getStudents(PageRequest.of(pageNo-1, pageSize)));
+        if(pageSize < 1) {
+            throw new IllegalArgumentException("Page size must be greater than or equal 1");
+        }
+        return ResponseEntity.ok(studentService.getStudents(PageRequest.of(pageNo-1, pageSize,sort)));
     }
 
 
