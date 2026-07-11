@@ -14,9 +14,13 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -253,6 +257,251 @@ class StudentServiceImplTest {
 
         verify(studentRepository, never()).deleteById(anyLong());
         verify(studentRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    void getAllStudents_ShouldReturnStudentList_WhenStudentsExist() {
+
+        // Arrange
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setFirstName("Sagar");
+
+        Student student2 = new Student();
+        student2.setId(2L);
+        student2.setFirstName("Rahul");
+
+        StudentResponseDTO dto1 = new StudentResponseDTO();
+        dto1.setId(1L);
+        dto1.setFirstName("Sagar");
+
+        StudentResponseDTO dto2 = new StudentResponseDTO();
+        dto2.setId(2L);
+        dto2.setFirstName("Rahul");
+
+        when(studentRepository.findAll())
+                .thenReturn(List.of(student1, student2));
+        when(modelMapper.map(student1, StudentResponseDTO.class))
+                .thenReturn(dto1);
+        when(modelMapper.map(student2, StudentResponseDTO.class))
+                .thenReturn(dto2);
+
+        // Act
+        List<StudentResponseDTO> result =  studentService.getAllStd();
+        // Assert
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(
+                "Sagar",
+                result.get(0).getFirstName());
+        Assertions.assertEquals(
+                "Rahul",
+                result.get(1).getFirstName());
+        Assertions.assertEquals(
+                2,
+                result.size());
+
+        // Verify
+        verify(studentRepository, times(1)).findAll();
+        verify(modelMapper, times(2))
+                .map(any(Student.class), eq(StudentResponseDTO.class));
+    }
+
+    @Test
+    void getAllStudents_ShouldReturnEmptyList_WhenStudentsNotExist() {
+
+        when(studentRepository.findAll())
+                .thenReturn(List.of());
+
+        List<StudentResponseDTO> result = studentService.getAllStd();
+
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertEquals(0, result.size());
+
+        verify(studentRepository, times(1)).findAll();
+        verify(modelMapper, never()).map(any(), any());
+
+    }
+
+    @Test
+    void getStudents_ShouldReturnPaginatedStudents_WhenStudentsExist() {
+
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setFirstName("Sagar");
+
+        Student student2 = new Student();
+        student2.setId(2L);
+        student2.setFirstName("Rahul");
+
+        StudentResponseDTO dto1 = new StudentResponseDTO();
+        dto1.setId(1L);
+        dto1.setFirstName("Sagar");
+
+        StudentResponseDTO dto2 = new StudentResponseDTO();
+        dto2.setId(2L);
+        dto2.setFirstName("Rahul");
+
+        Pageable pageable = PageRequest.of(1, 5);
+
+        Page<Student> studentPage = new PageImpl<>(List.of(student1, student2));
+
+        when(studentRepository.findAll(pageable)).thenReturn(studentPage);
+        when(modelMapper.map(student1, StudentResponseDTO.class)).thenReturn(dto1);
+        when(modelMapper.map(student2, StudentResponseDTO.class)).thenReturn(dto2);
+
+        Page<StudentResponseDTO> result = studentService.getStudents(pageable);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(2, result.getContent().size());
+        Assertions.assertEquals("Sagar", result.getContent().get(0).getFirstName());
+        Assertions.assertEquals("Rahul", result.getContent().get(1).getFirstName());
+
+        verify(studentRepository, times(1)).findAll(pageable);
+        verify(modelMapper, times(2)).map(any(Student.class), eq(StudentResponseDTO.class));
+    }
+
+    @Test
+    void getStudents_ShouldReturnEmptyPage_WhenStudentsNotExist() {
+
+        // Arrange
+        Pageable pageable = PageRequest.of(1, 5);
+
+        when(studentRepository.findAll(pageable))
+                .thenReturn(Page.empty(pageable));
+        // Act
+        Page<StudentResponseDTO> result =
+                studentService.getStudents(pageable);
+        // Assert
+        Assertions.assertEquals(0, result.getContent().size());
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertEquals(1, result.getNumber());
+        Assertions.assertEquals(5, result.getSize());
+
+        // Verify
+        verify(studentRepository, times(1)).findAll(pageable);
+        verify(modelMapper, never()).map(any(), any());
+
+    }
+
+    @Test
+    void searchStudents_ShouldReturnMatchingStudents_WhenSearchIsProvided() {
+
+        // Arrange
+        String search = "Sagar";
+        Pageable pageable = PageRequest.of(0, 5);
+
+        Student student = new Student();
+        student.setId(1L);
+        student.setFirstName("Sagar");
+
+        StudentResponseDTO dto = new StudentResponseDTO();
+        dto.setId(1L);
+        dto.setFirstName("Sagar");
+
+        Page<Student> studentPage = new PageImpl<>(
+                List.of(student),
+                pageable,
+                1
+        );
+
+        when(studentRepository
+                .findByFirstNameContainingIgnoreCase(search, pageable))
+                .thenReturn(studentPage);
+
+        when(modelMapper.map(student, StudentResponseDTO.class))
+                .thenReturn(dto);
+
+        // Act
+        Page<StudentResponseDTO> result =
+                studentService.searchStudents(search, pageable);
+
+        // Assert
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1, result.getContent().size());
+        Assertions.assertEquals(
+                "Sagar",
+                result.getContent().getFirst().getFirstName()
+        );
+
+        // Verify
+        verify(studentRepository, times(1))
+                .findByFirstNameContainingIgnoreCase(search, pageable);
+
+        verify(modelMapper, times(1))
+                .map(student, StudentResponseDTO.class);
+
+        verify(studentRepository, never())
+                .findAll(any(Pageable.class));
+    }
+
+    @Test
+    void searchStudents_ShouldReturnAllStudents_WhenSearchIsNull() {
+
+        // Arrange
+        Pageable pageable = PageRequest.of(1, 5);
+        String search = null;
+
+        Page<Student> studentPage = Page.empty(pageable);
+
+        when(studentRepository.findAll(pageable))
+                .thenReturn(studentPage);
+
+        // Act
+        Page<StudentResponseDTO> result =
+                studentService.searchStudents(search, pageable);
+
+        // Assert
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertEquals(0, result.getContent().size());
+
+        // Verify
+        verify(studentRepository, times(1))
+                .findAll(pageable);
+
+        verify(studentRepository, never())
+                .findByFirstNameContainingIgnoreCase(
+                        anyString(),
+                        any(Pageable.class)
+                );
+
+        verify(modelMapper, never())
+                .map(any(), any());
+    }
+
+    @Test
+    void searchStudents_ShouldReturnEmptyPage_WhenNoMatchFound() {
+
+        // Arrange
+        String search = "UnKnown";
+
+        Pageable pageable = PageRequest.of(1, 5);
+
+        Page<Student> studentPage = Page.empty(pageable);
+
+        when(studentRepository
+                .findByFirstNameContainingIgnoreCase(search, pageable))
+                .thenReturn(studentPage);
+
+        // Act
+        Page<StudentResponseDTO> result =
+                studentService.searchStudents(search, pageable);
+
+        // Assert
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertEquals(0, result.getTotalElements());
+
+        // Verify
+        verify(studentRepository, times(1))
+                .findByFirstNameContainingIgnoreCase(search, pageable);
+
+        verify(studentRepository, never())
+                .findAll(any(Pageable.class));
+
+        verify(modelMapper, never())
+                .map(any(), any());
     }
 
 }
