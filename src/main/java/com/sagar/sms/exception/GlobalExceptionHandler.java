@@ -18,9 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -81,12 +79,64 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(StudentNotFoundException.class)
-    protected ResponseEntity<Object> handleIdNotFoundException(StudentNotFoundException ex) {
+    protected ResponseEntity<Object> handleIdNotFoundException(
+            StudentNotFoundException ex) {
+
         String msg = ex.getMessage();
+
         List<String> details = new ArrayList<>();
         details.add("Id not available");
-        ApiErrors apiErrors = new ApiErrors(msg, details, HttpStatus.NOT_FOUND, LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrors);
+
+        ApiErrors apiErrors = new ApiErrors(
+                msg,
+                details,
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(apiErrors);
+    }
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    protected ResponseEntity<Object> handleCourseNotFoundException(
+            CourseNotFoundException ex) {
+
+        String msg = ex.getMessage();
+
+        List<String> details = new ArrayList<>();
+        details.add("Course id not available");
+
+        ApiErrors apiErrors = new ApiErrors(
+                msg,
+                details,
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(apiErrors);
+    }
+
+    @ExceptionHandler(CourseCodeAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleCourseCodeExistsException(
+            CourseCodeAlreadyExistsException ex) {
+
+        String msg = ex.getMessage();
+
+        List<String> details = new ArrayList<>();
+        details.add("Course code already exists");
+
+        ApiErrors apiErrors = new ApiErrors(
+                msg,
+                details,
+                HttpStatus.CONFLICT,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(apiErrors);
     }
 
     @ExceptionHandler(Exception.class)
