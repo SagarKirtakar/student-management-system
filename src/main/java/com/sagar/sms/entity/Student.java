@@ -5,15 +5,15 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString(exclude = "enrollments")
 @Entity
 @Table
-@Getter
-@Setter
 public class Student {
 
     @Id
@@ -41,5 +41,8 @@ public class Student {
 
     @Column
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments;
 
 }

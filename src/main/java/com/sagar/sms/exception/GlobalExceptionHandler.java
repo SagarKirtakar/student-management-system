@@ -118,6 +118,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(apiErrors);
     }
 
+    @ExceptionHandler(EnrollmentNotFoundException.class)
+    protected ResponseEntity<Object> handleEnrollmentNotFoundException(
+            EnrollmentNotFoundException ex) {
+
+        String msg = ex.getMessage();
+
+        List<String> details = new ArrayList<>();
+        details.add("Enrollment id not available");
+
+        ApiErrors apiErrors = new ApiErrors(
+                msg,
+                details,
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(apiErrors);
+    }
+
     @ExceptionHandler(CourseCodeAlreadyExistsException.class)
     protected ResponseEntity<Object> handleCourseCodeExistsException(
             CourseCodeAlreadyExistsException ex) {

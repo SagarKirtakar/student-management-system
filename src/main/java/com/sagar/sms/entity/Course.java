@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
-@Table(name = "courses")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "enrollments")
+@Entity
+@Table(name = "courses")
 public class Course {
 
     @Id
@@ -31,4 +31,7 @@ public class Course {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments;
 }
