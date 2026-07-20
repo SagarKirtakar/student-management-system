@@ -42,7 +42,7 @@ public class StudentController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequestDTO studentRequestDTO ) {
         studentService.updateStdById(id, studentRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

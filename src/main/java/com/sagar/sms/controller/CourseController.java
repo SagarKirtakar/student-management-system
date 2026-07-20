@@ -78,6 +78,15 @@ public class CourseController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDir
     ) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException(
+                    "Page number must be greater than or equal 1");
+        }
+
+        if (pageSize < 1) {
+            throw new IllegalArgumentException(
+                    "Page size must be greater than or equal 1");
+        }
 
         Sort sort = sortDir.equalsIgnoreCase("ASC")
                 ? Sort.by(sortBy).ascending()
