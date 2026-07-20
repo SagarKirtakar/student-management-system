@@ -11,6 +11,7 @@ import com.sagar.sms.exception.StudentNotFoundException;
 import com.sagar.sms.repository.CourseRepository;
 import com.sagar.sms.repository.EnrollmentRepository;
 import com.sagar.sms.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -29,25 +30,33 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
+    @Transactional
     @Override
     public void createEnrollment(EnrollmentRequestDTO requestDTO) {
 
         Student student = studentRepository.findById(requestDTO.getStudentId())
                 .orElseThrow(() ->
-                        new StudentNotFoundException("Student not found : "+requestDTO.getStudentId()));
+                        new StudentNotFoundException(
+                                "Student not found : " + requestDTO.getStudentId()));
 
         Course course = courseRepository.findById(requestDTO.getCourseId())
                 .orElseThrow(() ->
-                        new CourseNotFoundException("Course not found : "+requestDTO.getCourseId()));
+                        new CourseNotFoundException(
+                                "Course not found : " + requestDTO.getCourseId()));
 
-        Enrollment enrollment = modelMapper.map(requestDTO, Enrollment.class);
+        Enrollment enrollment = new Enrollment();
+
         enrollment.setStudent(student);
         enrollment.setCourse(course);
+        enrollment.setEnrollmentDate(requestDTO.getEnrollmentDate());
+        enrollment.setStatus(requestDTO.getStatus());
         enrollment.setCreatedAt(LocalDateTime.now());
         enrollment.setUpdatedAt(LocalDateTime.now());
+
         enrollmentRepository.save(enrollment);
     }
 
+    @Transactional
     @Override
     public List<EnrollmentResponseDTO> getAllEnrollments() {
 
@@ -57,6 +66,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public EnrollmentResponseDTO getEnrollmentById(long id) {
         if (id <= 0) {
@@ -70,6 +80,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return mapToResponseDTO(enrollment);
     }
 
+    @Transactional
     @Override
     public void updateEnrollmentById(long id, EnrollmentRequestDTO requestDTO) {
         if (id <= 0) {
@@ -87,15 +98,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .orElseThrow(() ->
                         new CourseNotFoundException("Course not found : "+requestDTO.getCourseId()));
 
-        modelMapper.map(requestDTO, enrollment);
-
         enrollment.setStudent(student);
         enrollment.setCourse(course);
+        enrollment.setStatus(requestDTO.getStatus());
         enrollment.setUpdatedAt(LocalDateTime.now());
 
         enrollmentRepository.save(enrollment);
     }
 
+    @Transactional
     @Override
     public void deleteEnrollmentById(long id) {
 
@@ -110,6 +121,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollmentRepository.deleteById(enrollment.getId());
     }
 
+    @Transactional
     @Override
     public Page<EnrollmentResponseDTO> getEnrollments(Pageable pageable) {
 
@@ -118,6 +130,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentPage.map(this::mapToResponseDTO);
     }
 
+    @Transactional
     @Override
     public Page<EnrollmentResponseDTO> searchEnrollments(
             String status,
@@ -136,8 +149,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     private EnrollmentResponseDTO mapToResponseDTO(Enrollment enrollment) {
-        EnrollmentResponseDTO dto =
-                modelMapper.map(enrollment, EnrollmentResponseDTO.class);
+
+        EnrollmentResponseDTO dto = new EnrollmentResponseDTO();
+
+        dto.setId(enrollment.getId());
 
         dto.setStudentId(enrollment.getStudent().getId());
         dto.setStudentName(
@@ -147,6 +162,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         dto.setCourseId(enrollment.getCourse().getId());
         dto.setCourseName(enrollment.getCourse().getCourseName());
+        dto.setEnrollmentDate(enrollment.getEnrollmentDate());
+        dto.setStatus(enrollment.getStatus());
+        dto.setCreatedAt(enrollment.getCreatedAt());
+        dto.setUpdatedAt(enrollment.getUpdatedAt());
 
         return dto;
     }
