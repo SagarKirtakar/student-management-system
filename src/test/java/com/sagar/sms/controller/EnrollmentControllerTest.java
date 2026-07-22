@@ -273,4 +273,80 @@ class EnrollmentControllerTest {
                 .createEnrollment(any());
     }
 
+    @Test
+    void assignGrade_ShouldReturnNoContent_WhenRequestIsValid() throws Exception {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(95.0);
+        requestDTO.setRemarks("Excellent");
+
+        doNothing().when(enrollmentService)
+                .assignGrade(eq(1L), any(GradeRequestDTO.class));
+
+        // Act & Assert
+        mockMvc.perform(put("/enrollments/{id}/grade", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isNoContent());
+
+        verify(enrollmentService, times(1))
+                .assignGrade(eq(1L), any(GradeRequestDTO.class));
+    }
+
+    @Test
+    void assignGrade_ShouldReturn400_WhenGradeIsLessThanZero() throws Exception {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(-10.0);
+        requestDTO.setRemarks("Invalid Grade");
+
+        // Act & Assert
+        mockMvc.perform(put("/enrollments/{id}/grade", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(enrollmentService, never())
+                .assignGrade(anyLong(), any(GradeRequestDTO.class));
+    }
+
+    @Test
+    void assignGrade_ShouldReturn400_WhenGradeIsGreaterThan100() throws Exception {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(110.0);
+        requestDTO.setRemarks("Invalid Grade");
+
+        // Act & Assert
+        mockMvc.perform(put("/enrollments/{id}/grade", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(enrollmentService, never())
+                .assignGrade(anyLong(), any(GradeRequestDTO.class));
+    }
+
+    @Test
+    void assignGrade_ShouldReturn400_WhenGradeIsNull() throws Exception {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(null);
+        requestDTO.setRemarks("Grade is required");
+
+        // Act & Assert
+        mockMvc.perform(put("/enrollments/{id}/grade", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(enrollmentService, never())
+                .assignGrade(anyLong(), any(GradeRequestDTO.class));
+    }
+
+
 }

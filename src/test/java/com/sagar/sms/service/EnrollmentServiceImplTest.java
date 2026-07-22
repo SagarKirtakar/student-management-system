@@ -1,7 +1,6 @@
 package com.sagar.sms.service;
 
-import com.sagar.sms.dto.EnrollmentRequestDTO;
-import com.sagar.sms.dto.EnrollmentResponseDTO;
+import com.sagar.sms.dto.*;
 import com.sagar.sms.entity.Course;
 import com.sagar.sms.entity.Enrollment;
 import com.sagar.sms.entity.Student;
@@ -708,7 +707,264 @@ class EnrollmentServiceImplTest {
                         pageable);
     }
 
+    @Test
+    void assignGrade_ShouldUpdateGrade_WhenEnrollmentExists() {
 
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(92.0);
+        requestDTO.setRemarks("Outstanding");
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setId(1L);
+        enrollment.setStatus("ACTIVE");
+
+        when(enrollmentRepository.findById(1L))
+                .thenReturn(Optional.of(enrollment));
+
+        // Act
+        enrollmentService.assignGrade(1L, requestDTO);
+
+        // Assert
+        assertEquals(92.0, enrollment.getGrade());
+        assertEquals("Outstanding", enrollment.getRemarks());
+
+        verify(enrollmentRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, times(1)).save(enrollment);
+    }
+
+    @Test
+    void assignGrade_ShouldThrowException_WhenEnrollmentNotFound() {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(90.0);
+        requestDTO.setRemarks("Excellent");
+
+        when(enrollmentRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        EnrollmentNotFoundException exception = assertThrows(
+                EnrollmentNotFoundException.class,
+                () -> enrollmentService.assignGrade(1L, requestDTO)
+        );
+
+        assertEquals("Enrollment not found : 1", exception.getMessage());
+
+        verify(enrollmentRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, never()).save(any(Enrollment.class));
+    }
+
+    @Test
+    void assignGrade_ShouldThrowException_WhenEnrollmentStatusIsNotActive() {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(85.0);
+        requestDTO.setRemarks("Good");
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setId(1L);
+        enrollment.setStatus("PENDING");
+
+        when(enrollmentRepository.findById(1L))
+                .thenReturn(Optional.of(enrollment));
+
+        // Act & Assert
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> enrollmentService.assignGrade(1L, requestDTO)
+        );
+
+        assertEquals(
+                "Grade can only be assigned to ACTIVE enrollments",
+                exception.getMessage()
+        );
+
+        verify(enrollmentRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, never()).save(any(Enrollment.class));
+    }
+
+    @Test
+    void assignGrade_ShouldThrowException_WhenInvalidId() {
+
+        // Arrange
+        GradeRequestDTO requestDTO = new GradeRequestDTO();
+        requestDTO.setGrade(90.0);
+        requestDTO.setRemarks("Excellent");
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> enrollmentService.assignGrade(0L, requestDTO)
+        );
+
+        assertEquals(
+                "Other type of exception",
+                exception.getMessage()
+        );
+
+        verify(enrollmentRepository, never()).findById(anyLong());
+        verify(enrollmentRepository, never()).save(any(Enrollment.class));
+    }
+
+    @Test
+    void getStudentReport_ShouldReturnReport_WhenStudentExists() {
+
+        // Arrange
+        Student student = new Student();
+        student.setId(1L);
+        student.setFirstName("Sagar");
+        student.setLastName("Kirtakar");
+
+        Course course = new Course();
+        course.setId(1L);
+        course.setCourseName("Java");
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setStudent(student);
+        enrollment.setCourse(course);
+        enrollment.setGrade(90.0);
+        enrollment.setRemarks("Excellent");
+
+        when(studentRepository.findById(1L))
+                .thenReturn(Optional.of(student));
+
+        when(enrollmentRepository.findByStudentId(1L))
+                .thenReturn(List.of(enrollment));
+
+        // Act
+        StudentReportDTO report = enrollmentService.getStudentReport(1L);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(1L, report.getStudentId());
+        assertEquals("Sagar Kirtakar", report.getStudentName());
+        assertEquals(1, report.getCourses().size());
+        assertEquals(90.0, report.getAverageGrade());
+
+        verify(studentRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, times(1)).findByStudentId(1L);
+    }
+
+    @Test
+    void getStudentReport_ShouldThrowException_WhenStudentNotFound() {
+
+        // Arrange
+        when(studentRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        StudentNotFoundException exception = assertThrows(
+                StudentNotFoundException.class,
+                () -> enrollmentService.getStudentReport(1L)
+        );
+
+        assertEquals("Student not found : 1", exception.getMessage());
+
+        verify(studentRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, never()).findByStudentId(anyLong());
+    }
+
+    @Test
+    void getStudentReport_ShouldThrowException_WhenInvalidStudentId() {
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> enrollmentService.getStudentReport(0L)
+        );
+
+        assertEquals(
+                "Other type of exception",
+                exception.getMessage()
+        );
+
+        verify(studentRepository, never()).findById(anyLong());
+        verify(enrollmentRepository, never()).findByStudentId(anyLong());
+    }
+
+    @Test
+    void getCourseReport_ShouldReturnReport_WhenCourseExists() {
+
+        // Arrange
+        Course course = new Course();
+        course.setId(1L);
+        course.setCourseName("Java");
+
+        Student student = new Student();
+        student.setId(1L);
+        student.setFirstName("Sagar");
+        student.setLastName("Kirtakar");
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setCourse(course);
+        enrollment.setStudent(student);
+        enrollment.setGrade(95.0);
+        enrollment.setRemarks("Excellent");
+
+        when(courseRepository.findById(1L))
+                .thenReturn(Optional.of(course));
+
+        when(enrollmentRepository.findByCourseId(1L))
+                .thenReturn(List.of(enrollment));
+
+        // Act
+        CourseReportDTO report = enrollmentService.getCourseReport(1L);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(1L, report.getCourseId());
+        assertEquals("Java", report.getCourseName());
+        assertEquals(1, report.getTotalStudents());
+        assertEquals(95.0, report.getAverageGrade());
+
+        assertEquals(1, report.getStudents().size());
+        assertEquals(
+                "Sagar Kirtakar",
+                report.getStudents().get(0).getStudentName());
+
+        verify(courseRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, times(1)).findByCourseId(1L);
+    }
+
+    @Test
+    void getCourseReport_ShouldThrowException_WhenCourseNotFound() {
+
+        // Arrange
+        when(courseRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        CourseNotFoundException exception = assertThrows(
+                CourseNotFoundException.class,
+                () -> enrollmentService.getCourseReport(1L)
+        );
+
+        assertEquals("Course not found : 1", exception.getMessage());
+
+        verify(courseRepository, times(1)).findById(1L);
+        verify(enrollmentRepository, never()).findByCourseId(anyLong());
+    }
+
+    @Test
+    void getCourseReport_ShouldThrowException_WhenInvalidCourseId() {
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> enrollmentService.getCourseReport(0L)
+        );
+
+        assertEquals(
+                "Other type of exception",
+                exception.getMessage()
+        );
+
+        verify(courseRepository, never()).findById(anyLong());
+        verify(enrollmentRepository, never()).findByCourseId(anyLong());
+    }
 
 
 

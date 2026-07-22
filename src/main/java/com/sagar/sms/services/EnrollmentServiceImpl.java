@@ -1,7 +1,6 @@
 package com.sagar.sms.services;
 
-import com.sagar.sms.dto.EnrollmentRequestDTO;
-import com.sagar.sms.dto.EnrollmentResponseDTO;
+import com.sagar.sms.dto.*;
 import com.sagar.sms.entity.Course;
 import com.sagar.sms.entity.Enrollment;
 import com.sagar.sms.entity.Student;
@@ -164,9 +163,127 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         dto.setCourseName(enrollment.getCourse().getCourseName());
         dto.setEnrollmentDate(enrollment.getEnrollmentDate());
         dto.setStatus(enrollment.getStatus());
+        dto.setGrade(enrollment.getGrade());
+        dto.setRemarks(enrollment.getRemarks());
         dto.setCreatedAt(enrollment.getCreatedAt());
         dto.setUpdatedAt(enrollment.getUpdatedAt());
 
         return dto;
     }
+
+    @Transactional
+    @Override
+    public void assignGrade(Long enrollmentId, GradeRequestDTO requestDTO) {
+
+        if (enrollmentId <= 0) {
+            throw new RuntimeException("Other type of exception");
+        }
+
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() ->
+                        new EnrollmentNotFoundException(
+                                "Enrollment not found : " + enrollmentId));
+
+        if (!"ACTIVE".equalsIgnoreCase(enrollment.getStatus())) {
+            throw new IllegalStateException(
+                    "Grade can only be assigned to ACTIVE enrollments");
+        }
+
+        enrollment.setGrade(requestDTO.getGrade());
+        enrollment.setRemarks(requestDTO.getRemarks());
+        enrollment.setUpdatedAt(LocalDateTime.now());
+
+        enrollmentRepository.save(enrollment);
+    }
+
+    @Transactional
+    @Override
+    public StudentReportDTO getStudentReport(Long studentId) {
+
+        if (studentId <= 0) {
+            throw new RuntimeException("Other type of exception");
+        }
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found : " + studentId));
+
+        List<Enrollment> enrollments =
+                enrollmentRepository.findByStudentId(studentId);
+
+        List<StudentCourseGradeDTO> courseGrades = enrollments.stream()
+                .map(enrollment -> {
+                    StudentCourseGradeDTO dto = new StudentCourseGradeDTO();
+                    dto.setCourseName(enrollment.getCourse().getCourseName());
+                    dto.setGrade(enrollment.getGrade());
+                    dto.setRemarks(enrollment.getRemarks());
+                    return dto;
+                })
+                .toList();
+
+        double average = enrollments.stream()
+                .filter(enrollment -> enrollment.getGrade() != null)
+                .mapToDouble(Enrollment::getGrade)
+                .average()
+                .orElse(0.0);
+
+        StudentReportDTO report = new StudentReportDTO();
+        report.setStudentId(student.getId());
+        report.setStudentName(
+                student.getFirstName() + " " + student.getLastName());
+        report.setCourses(courseGrades);
+        report.setAverageGrade(average);
+
+        return report;
+    }
+
+    @Transactional
+    @Override
+    public CourseReportDTO getCourseReport(Long courseId) {
+
+        if (courseId <= 0) {
+            throw new RuntimeException("Other type of exception");
+        }
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new CourseNotFoundException(
+                                "Course not found : " + courseId));
+
+        List<Enrollment> enrollments =
+                enrollmentRepository.findByCourseId(courseId);
+
+        List<CourseStudentGradeDTO> students = enrollments.stream()
+                .map(enrollment -> {
+                    CourseStudentGradeDTO dto = new CourseStudentGradeDTO();
+
+                    dto.setStudentName(
+                            enrollment.getStudent().getFirstName() + " " +
+                                    enrollment.getStudent().getLastName());
+
+                    dto.setGrade(enrollment.getGrade());
+                    dto.setRemarks(enrollment.getRemarks());
+
+                    return dto;
+                })
+                .toList();
+
+        double average = enrollments.stream()
+                .filter(enrollment -> enrollment.getGrade() != null)
+                .mapToDouble(Enrollment::getGrade)
+                .average()
+                .orElse(0.0);
+
+        CourseReportDTO report = new CourseReportDTO();
+
+        report.setCourseId(course.getId());
+        report.setCourseName(course.getCourseName());
+        report.setTotalStudents(enrollments.size());
+        report.setAverageGrade(average);
+        report.setStudents(students);
+
+        return report;
+    }
+
 }

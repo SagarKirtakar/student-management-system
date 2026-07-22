@@ -33,6 +33,10 @@ public class Enrollment {
     @Column(nullable = false)
     private String status;
 
+    private Double grade;
+
+    private String remarks;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

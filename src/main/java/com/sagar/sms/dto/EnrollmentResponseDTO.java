@@ -24,6 +24,10 @@ public class EnrollmentResponseDTO {
 
     private String status;
 
+    private Double grade;
+
+    private String remarks;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

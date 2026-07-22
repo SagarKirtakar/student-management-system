@@ -1,7 +1,6 @@
 package com.sagar.sms.services;
 
-import com.sagar.sms.dto.EnrollmentRequestDTO;
-import com.sagar.sms.dto.EnrollmentResponseDTO;
+import com.sagar.sms.dto.*;
 import com.sagar.sms.entity.Enrollment;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,5 +24,10 @@ public interface EnrollmentService {
 
     Page<EnrollmentResponseDTO> searchEnrollments(String status, Pageable pageable);
 
+    void assignGrade(Long enrollmentId, GradeRequestDTO requestDTO);
+
+    StudentReportDTO getStudentReport(Long studentId);
+
+    CourseReportDTO getCourseReport(Long courseId);
 
 }

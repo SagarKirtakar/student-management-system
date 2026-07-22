@@ -2,6 +2,7 @@ package com.sagar.sms.controller;
 
 import com.sagar.sms.dto.EnrollmentRequestDTO;
 import com.sagar.sms.dto.EnrollmentResponseDTO;
+import com.sagar.sms.dto.GradeRequestDTO;
 import com.sagar.sms.services.EnrollmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -124,5 +125,15 @@ public class EnrollmentController {
         return ResponseEntity.ok(
                 enrollmentService.searchEnrollments(status, pageable)
         );
+    }
+
+    @PutMapping("/{id}/grade")
+    public ResponseEntity<Void> assignGrade(
+            @PathVariable Long id,
+            @Valid @RequestBody GradeRequestDTO requestDTO) {
+
+        enrollmentService.assignGrade(id, requestDTO);
+
+        return ResponseEntity.noContent().build();
     }
 }
