@@ -136,30 +136,43 @@ graph TD
 ## 📂 Project Structure
 
 ```text
-src
-├── main
-│   ├── java
-│   │   └── com.sagar.sms
-│   │       ├── config
-│   │       ├── controller
-│   │       ├── dto
-│   │       ├── entity
-│   │       ├── exception
-│   │       ├── repository
-│   │       ├── services
-│   │       └── StudentManagementSystemApplication.java
-│   │
-│   └── resources
-│       ├── application.properties
-│       └── static
+student-management-system
+├── screenshots
+│   ├── courses.png
+│   ├── enrollments.png
+│   ├── reports.png
+│   ├── students.png
+│   ├── swagger-home-1.png
+│   └── swagger-home-2.png
 │
-└── test
-    └── java
-        └── com.sagar.sms
-            ├── controller
-            └── services
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com.sagar.sms
+│   │   │       ├── config
+│   │   │       ├── controller
+│   │   │       ├── dto
+│   │   │       ├── entity
+│   │   │       ├── exception
+│   │   │       ├── repository
+│   │   │       ├── services
+│   │   │       └── StudentManagementSystemApplication.java
+│   │   │
+│   │   └── resources
+│   │       ├── application.properties
+│   │       └── static
+│   │
+│   └── test
+│       └── java
+│           └── com.sagar.sms
+│               ├── controller
+│               └── services
+│
+├── README.md
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
 ```
-
 ## 🗄️ Database Schema
 
 The application uses **MySQL** and consists of the following tables:
