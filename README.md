@@ -269,7 +269,7 @@ Make sure you have the following installed:
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/student-management-system.git
+git clone https://github.com/SagarKirtakar/student-management-system.git
 ```
 
 ```bash
@@ -388,6 +388,47 @@ Swagger provides:
 ## Reports APIs
 
 ![Reports](screenshots/reports.png)
+
+# 🚀 Future Enhancements
+
+The following features can be added in future releases:
+
+- 🔐 Spring Security with JWT Authentication
+- 👥 Role-Based Access Control (Admin, Faculty, Student)
+- 🐳 Docker & Docker Compose Support
+- ☁️ AWS EC2 Deployment
+- ⚙️ GitHub Actions CI/CD Pipeline
+- 📧 Email Notifications
+- 📄 PDF Report Generation
+- 📊 Dashboard & Analytics
+- 📁 File Upload for Student Profile
+- 📅 Attendance Management
+- 📝 Examination Management
+- 💰 Fee Management
+- 📱 Frontend Integration (React)
+- 📈 Monitoring with Spring Boot Actuator
+- 📝 Logging using SLF4J & Logback
+
+# 👨‍💻 Author
+
+**Sagar Kirtakar**
+
+Java Full Stack Developer
+
+- 📧 Email: sagarkirtakar2002@gmail.com
+- 💼 LinkedIn: https://www.linkedin.com/in/sagar-kirtakar-47255a202/
+- 💻 GitHub: https://github.com/SagarKirtakar
+
+If you found this project helpful, consider giving it a ⭐ on GitHub.
+
+# 📄 License
+
+This project is licensed under the **Apache License 2.0**.
+
+You are free to use, modify, and distribute this project in accordance with the terms of the license.
+
+For more details, see the **LICENSE** file.
+
 
 
 
