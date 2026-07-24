@@ -393,8 +393,6 @@ Swagger provides:
 
 ## Swagger UI
 
-> Add a screenshot of your Swagger homepage here.
-
 ![Swagger UI](screenshots/swagger-home-1.png)
 ![Swagger UI](screenshots/swagger-home-2.png)
 
