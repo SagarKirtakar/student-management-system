@@ -68,3 +68,118 @@ This project was built as part of a Java Backend Developer learning journey and 
 - JUnit 5
 - Mockito
 - MockMvc
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| Language | Java 21 |
+| Framework | Spring Boot |
+| ORM | Spring Data JPA, Hibernate |
+| Database | MySQL |
+| Build Tool | Maven |
+| API Documentation | Swagger / OpenAPI 3 |
+| Validation | Jakarta Bean Validation |
+| Object Mapping | ModelMapper |
+| Boilerplate Reduction | Lombok |
+| Testing | JUnit 5, Mockito, MockMvc |
+| Version Control | Git & GitHub |
+| IDE | IntelliJ IDEA |
+
+## 🏗️ Project Architecture
+
+```mermaid
+graph TD
+    A[Client / Postman / Swagger UI]
+    A --> B[REST Controllers]
+    B --> C[Service Layer]
+    C --> D[Repository Layer]
+    D --> E[(MySQL Database)]
+
+    C --> F[DTO Mapping]
+    C --> G[Validation]
+    C --> H[Exception Handling]
+```
+
+## 📂 Project Structure
+
+```text
+src
+├── main
+│   ├── java
+│   │   └── com.sagar.sms
+│   │       ├── config
+│   │       ├── controller
+│   │       ├── dto
+│   │       ├── entity
+│   │       ├── exception
+│   │       ├── repository
+│   │       ├── services
+│   │       └── StudentManagementSystemApplication.java
+│   │
+│   └── resources
+│       ├── application.properties
+│       └── static
+│
+└── test
+    └── java
+        └── com.sagar.sms
+            ├── controller
+            └── services
+```
+
+## 🗄️ Database Schema
+
+The application uses **MySQL** and consists of the following tables:
+
+- **students**
+- **courses**
+- **enrollments**
+
+### Relationships
+
+- One Student → Many Enrollments
+- One Course → Many Enrollments
+- Enrollment stores:
+  - Student
+  - Course
+  - Grade
+  - Remarks
+  - Status
+
+ ## 📊 Entity Relationship Diagram
+
+```mermaid
+erDiagram
+
+    STUDENTS ||--o{ ENROLLMENTS : enrolls
+    COURSES ||--o{ ENROLLMENTS : contains
+
+    STUDENTS {
+        Long id
+        String firstName
+        String lastName
+        String email
+        String phone
+        LocalDate dob
+    }
+
+    COURSES {
+        Long id
+        String courseName
+        String courseCode
+        String description
+    }
+
+    ENROLLMENTS {
+        Long id
+        Long studentId
+        Long courseId
+        LocalDate enrollmentDate
+        String status
+        Double grade
+        String remarks
+    }
+```
+
+
