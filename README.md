@@ -9,6 +9,25 @@
 ![Mockito](https://img.shields.io/badge/Mockito-Testing-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)
 
+## 📑 Table of Contents
+
+- 📖 Project Description
+- ✨ Features
+- 🛠 Tech Stack
+- 🏗 Architecture
+- 📂 Project Structure
+- 🗄 Database Schema
+- 📊 ER Diagram
+- 🚀 REST API Endpoints
+- ⚙ Installation
+- ▶ Running the Project
+- 🧪 Testing
+- 📖 Swagger Documentation
+- 📸 Screenshots
+- 🚀 Future Enhancements
+- 👨‍💻 Author
+- 📄 License
+
 ## 📖 Project Description
 
 The **Student Management System REST API** is a backend application built using **Spring Boot** that provides RESTful APIs for managing students, courses, enrollments, grades, and reports.
@@ -16,6 +35,19 @@ The **Student Management System REST API** is a backend application built using 
 The project follows a clean layered architecture and demonstrates enterprise backend development practices including validation, exception handling, pagination, searching, testing, and API documentation.
 
 This project was built as part of a Java Backend Developer learning journey and showcases production-ready REST API development using Spring Boot.
+
+## 🌟 Project Highlights
+
+- ✅ Layered Architecture
+- ✅ RESTful APIs
+- ✅ CRUD Operations
+- ✅ Pagination & Sorting
+- ✅ Search APIs
+- ✅ Bean Validation
+- ✅ Global Exception Handling
+- ✅ Swagger/OpenAPI Documentation
+- ✅ JUnit & Mockito Testing
+- ✅ Report Generation
 
 ## ✨ Features
 
