@@ -252,5 +252,143 @@ After running the application, access the API documentation using:
 | Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
 | OpenAPI JSON | `http://localhost:8080/v3/api-docs` |
 
+# ⚙️ Installation
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Java 21
+- Maven 3.9+
+- MySQL 8+
+- Git
+- IntelliJ IDEA (Recommended)
+
+---
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/student-management-system.git
+```
+
+```bash
+cd student-management-system
+```
+
+---
+
+## Configure Database
+
+Create a MySQL database.
+
+```sql
+CREATE DATABASE student_management_system;
+```
+
+Update the database configuration in **application.properties**.
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/student_management_system
+spring.datasource.username=root
+spring.datasource.password=your_password
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+---
+
+## Build the Project
+
+```bash
+mvn clean install
+```
+
+## ▶️ Running the Application
+
+Start the Spring Boot application using Maven:
+
+```bash
+mvn spring-boot:run
+```
+
+Or run the main class:
+
+```text
+StudentManagementSystemApplication.java
+```
+
+Once the application starts, it will be available at:
+
+```
+http://localhost:8080
+```
+
+## 🧪 Running Tests
+
+Run all unit and controller tests using Maven:
+
+```bash
+mvn test
+```
+
+### Testing Frameworks Used
+
+- JUnit 5
+- Mockito
+- Spring Boot Test
+- MockMvc
+
+## 📖 Swagger API Documentation
+
+After starting the application, access the interactive API documentation.
+
+| Documentation | URL |
+|---------------|-----|
+| Swagger UI | http://localhost:8080/swagger-ui/index.html |
+| OpenAPI JSON | http://localhost:8080/v3/api-docs |
+
+Swagger provides:
+
+- Interactive API testing
+- Request & Response examples
+- Validation details
+- Response codes
+- Schema documentation
+
+# 📸 Screenshots
+
+## Swagger UI
+
+> Add a screenshot of your Swagger homepage here.
+
+![Swagger UI](screenshots/swagger-home.png)
+
+---
+
+## Student APIs
+
+![Students](screenshots/students.png)
+
+---
+
+## Course APIs
+
+![Courses](screenshots/courses.png)
+
+---
+
+## Enrollment APIs
+
+![Enrollments](screenshots/enrollments.png)
+
+---
+
+## Reports APIs
+
+![Reports](screenshots/reports.png)
+
+
 
 
