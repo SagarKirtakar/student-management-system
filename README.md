@@ -182,4 +182,75 @@ erDiagram
     }
 ```
 
+# 🚀 REST API Endpoints
+
+## 👨‍🎓 Student Management
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| POST | `/students` | Create a new student |
+| GET | `/students` | Get all students |
+| GET | `/students/{id}` | Get student by ID |
+| PUT | `/students/{id}` | Update student |
+| DELETE | `/students/{id}` | Delete student |
+| GET | `/students/search` | Search students by first name |
+| GET | `/students/page` | Get students with pagination & sorting |
+
+---
+
+## 📚 Course Management
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| POST | `/courses` | Create a new course |
+| GET | `/courses` | Get all courses |
+| GET | `/courses/{id}` | Get course by ID |
+| PUT | `/courses/{id}` | Update course |
+| DELETE | `/courses/{id}` | Delete course |
+| GET | `/courses/search` | Search courses by course name |
+| GET | `/courses/page` | Get courses with pagination & sorting |
+
+---
+
+## 📝 Enrollment Management
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| POST | `/enrollments` | Enroll a student into a course |
+| GET | `/enrollments` | Get all enrollments |
+| GET | `/enrollments/{id}` | Get enrollment by ID |
+| PUT | `/enrollments/{id}` | Update enrollment |
+| DELETE | `/enrollments/{id}` | Delete enrollment |
+| GET | `/enrollments/search` | Search enrollments by status |
+| GET | `/enrollments/page` | Get enrollments with pagination & sorting |
+
+---
+
+## 🎯 Grade Management
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| PUT | `/enrollments/{id}/grade` | Assign or update a student's grade |
+
+---
+
+## 📊 Reports
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| GET | `/reports/students/{studentId}` | Generate student performance report |
+| GET | `/reports/courses/{courseId}` | Generate course performance report |
+
+---
+
+## 📖 Swagger Documentation
+
+After running the application, access the API documentation using:
+
+| Resource | URL |
+|----------|-----|
+| Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
+| OpenAPI JSON | `http://localhost:8080/v3/api-docs` |
+
+
 
