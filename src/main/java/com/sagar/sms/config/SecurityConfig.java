@@ -26,6 +26,29 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
+                        // Student APIs
+                        .requestMatchers("/students/**")
+                        .hasRole("ADMIN")
+
+                        // Course APIs
+                        .requestMatchers("/courses/**")
+                        .hasRole("ADMIN")
+
+                        // Enrollment APIs
+                        .requestMatchers("/enrollments/**")
+                        .hasRole("ADMIN")
+
+                        // Report APIs
+                        .requestMatchers("/reports/**")
+                        .hasAnyRole("ADMIN", "TEACHER")
+
+                        // Everything else
                         .anyRequest().authenticated()
                 )
 
