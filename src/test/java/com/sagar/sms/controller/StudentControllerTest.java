@@ -161,9 +161,9 @@ public class StudentControllerTest {
     }
 
     @Test
-    void updateStudent_ShouldReturnCreated_WhenRequestIsValid() throws Exception {
+    void updateStudent_ShouldReturnNoContent_WhenRequestIsValid() throws Exception {
 
-        Long id =1L;
+        Long id = 1L;
 
         StudentRequestDTO dto = new StudentRequestDTO();
         dto.setFirstName("Sagar");
@@ -171,13 +171,16 @@ public class StudentControllerTest {
         dto.setEmail("sagar@gmail.com");
         dto.setDateOfBirth(LocalDate.of(2002, 4, 10));
 
-        mockMvc.perform(put("/students/{id}",id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated());
+        doNothing().when(studentService)
+                .updateStdById(eq(id), any(StudentRequestDTO.class));
 
-        verify(studentService, times(1)).updateStdById(eq(id), any(StudentRequestDTO.class));
+        mockMvc.perform(put("/students/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNoContent());
 
+        verify(studentService, times(1))
+                .updateStdById(eq(id), any(StudentRequestDTO.class));
     }
 
     @Test
