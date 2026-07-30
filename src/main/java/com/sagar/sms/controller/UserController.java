@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "APIs for user registration and authentication")
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
     @Operation(
             summary = "Register User",
@@ -38,7 +38,7 @@ public class UserController {
             @Parameter(description = "User registration details")
             RegisterRequestDTO request) {
 
-        return service.register(request);
+        return userService.register(request);
     }
 
     @Operation(
@@ -57,7 +57,7 @@ public class UserController {
             @Parameter(description = "User login credentials")
             LoginRequestDTO request) {
 
-        return service.verify(request);
+        return userService.verify(request);
     }
 
 }
