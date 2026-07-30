@@ -437,12 +437,10 @@ Swagger provides:
 
 The following features can be added in future releases:
 
-- 🔐 Spring Security with JWT Authentication
-- 👥 Role-Based Access Control (Admin, Faculty, Student)
-- 🐳 Docker & Docker Compose Support
 - ☁️ AWS EC2 Deployment
-- ⚙️ GitHub Actions CI/CD Pipeline
 - 📧 Email Notifications
+- 🔄 Refresh Token & Logout Functionality
+- 🔑 Forgot Password & Password Reset
 - 📄 PDF Report Generation
 - 📊 Dashboard & Analytics
 - 📁 File Upload for Student Profile
@@ -452,6 +450,11 @@ The following features can be added in future releases:
 - 📱 Frontend Integration (React)
 - 📈 Monitoring with Spring Boot Actuator
 - 📝 Logging using SLF4J & Logback
+- 🔍 Advanced Search & Filtering
+- 📤 Export Student Data (Excel/PDF)
+- 🔔 Notification System
+- 🌐 Microservices Architecture
+- ☸️ Kubernetes Deployment
 
 # 👨‍💻 Author
 
