@@ -2,14 +2,17 @@ package com.sagar.sms.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sagar.sms.config.JwtFilter;
 import com.sagar.sms.dto.CourseRequestDTO;
 import com.sagar.sms.dto.CourseResponseDTO;
 import com.sagar.sms.dto.StudentRequestDTO;
 import com.sagar.sms.exception.CourseNotFoundException;
 import com.sagar.sms.services.CourseService;
+import com.sagar.sms.services.JWTService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
@@ -26,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CourseController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CourseControllerTest {
 
     @Autowired
@@ -36,6 +40,12 @@ public class CourseControllerTest {
 
     @MockitoBean
     private CourseService courseService;
+
+    @MockitoBean
+    private JwtFilter jwtFilter;
+
+    @MockitoBean
+    private JWTService jwtService;
 
     @Test
     void createCourse_ShouldReturnCreated_WhenRequestIsValid() throws Exception {

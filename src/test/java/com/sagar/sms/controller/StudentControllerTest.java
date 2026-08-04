@@ -1,15 +1,19 @@
 package com.sagar.sms.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sagar.sms.config.JwtFilter;
 import com.sagar.sms.dto.StudentRequestDTO;
 import com.sagar.sms.dto.StudentResponseDTO;
 import com.sagar.sms.entity.Student;
 import com.sagar.sms.exception.StudentNotFoundException;
+import com.sagar.sms.services.JWTService;
 import com.sagar.sms.services.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class StudentControllerTest {
 
     @Autowired
@@ -33,17 +38,25 @@ public class StudentControllerTest {
     @MockitoBean
     private StudentService studentService;
 
+    @MockitoBean
+    private JwtFilter jwtFilter;
+
+    @MockitoBean
+    private JWTService jwtService;
+
     @Test
+    @WithMockUser(roles = "ADMIN")
     void createStudent_ShouldReturnCreated_WhenRequestIsValid() throws Exception {
 
         // Arrange
         StudentRequestDTO requestDTO = new StudentRequestDTO();
-
         requestDTO.setFirstName("Sagar");
         requestDTO.setLastName("Kirtakar");
         requestDTO.setEmail("sagar@gmail.com");
         requestDTO.setPhone("9876543210");
         requestDTO.setDateOfBirth(LocalDate.of(2002, 5, 20));
+
+        doNothing().when(studentService).createStd(any(StudentRequestDTO.class));
 
         // Act & Assert
         mockMvc.perform(post("/students")
