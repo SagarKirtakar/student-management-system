@@ -138,6 +138,7 @@ graph TD
 ```text
 student-management-system
 ├── screenshots
+│   ├── authentication.png
 │   ├── courses.png
 │   ├── enrollments.png
 │   ├── reports.png
@@ -150,12 +151,58 @@ student-management-system
 │   │   ├── java
 │   │   │   └── com.sagar.sms
 │   │   │       ├── config
+│   │   │       │   ├── JwtFilter.java
+│   │   │       │   └── SecurityConfig.java
+│   │   │       │
 │   │   │       ├── controller
+│   │   │       │   ├── CourseController.java
+│   │   │       │   ├── EnrollmentController.java
+│   │   │       │   ├── ReportController.java
+│   │   │       │   ├── StudentController.java
+│   │   │       │   └── UserController.java
+│   │   │       │
 │   │   │       ├── dto
+│   │   │       │   ├── CourseRequestDTO.java
+│   │   │       │   ├── CourseResponseDTO.java
+│   │   │       │   ├── EnrollmentRequestDTO.java
+│   │   │       │   ├── EnrollmentResponseDTO.java
+│   │   │       │   ├── LoginRequestDTO.java
+│   │   │       │   ├── LoginResponseDTO.java
+│   │   │       │   ├── RegisterRequestDTO.java
+│   │   │       │   ├── StudentRequestDTO.java
+│   │   │       │   ├── StudentResponseDTO.java
+│   │   │       │   └── UserResponseDTO.java
+│   │   │       │
 │   │   │       ├── entity
+│   │   │       │   ├── Course.java
+│   │   │       │   ├── Enrollment.java
+│   │   │       │   ├── Role.java
+│   │   │       │   ├── Student.java
+│   │   │       │   ├── UserPrincipal.java
+│   │   │       │   └── Users.java
+│   │   │       │
 │   │   │       ├── exception
+│   │   │       │
 │   │   │       ├── repository
+│   │   │       │   ├── CourseRepository.java
+│   │   │       │   ├── EnrollmentRepository.java
+│   │   │       │   ├── StudentRepository.java
+│   │   │       │   └── UserRepo.java
+│   │   │       │
 │   │   │       ├── services
+│   │   │       │   ├── CourseService.java
+│   │   │       │   ├── CourseServiceImpl.java
+│   │   │       │   ├── CustomUserDetailsService.java
+│   │   │       │   ├── EnrollmentService.java
+│   │   │       │   ├── EnrollmentServiceImpl.java
+│   │   │       │   ├── JWTService.java
+│   │   │       │   ├── ReportService.java
+│   │   │       │   ├── ReportServiceImpl.java
+│   │   │       │   ├── StudentService.java
+│   │   │       │   ├── StudentServiceImpl.java
+│   │   │       │   ├── UserService.java
+│   │   │       │   └── UserServiceImpl.java
+│   │   │       │
 │   │   │       └── StudentManagementSystemApplication.java
 │   │   │
 │   │   └── resources
@@ -166,7 +213,12 @@ student-management-system
 │       └── java
 │           └── com.sagar.sms
 │               ├── controller
+│               │   ├── StudentControllerTest.java
+│               │   └── UserControllerTest.java
+│               │
 │               └── services
+│                   ├── StudentServiceImplTest.java
+│                   └── UserServiceImplTest.java
 │
 ├── README.md
 ├── pom.xml
